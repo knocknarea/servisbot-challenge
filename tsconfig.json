@@ -8,6 +8,12 @@
     },
     {
       "path": "./apps/backend"
+    },
+    {
+      "path": "./libs/model"
+    },
+    {
+      "path": "./apps/frontend"
     }
   ]
 }

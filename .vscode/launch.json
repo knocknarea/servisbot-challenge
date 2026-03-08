@@ -4,9 +4,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @challenge/backend with Nx",
+      "name": "Debug @servisbot/backend with Nx",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["nx", "serve", "@challenge/backend"],
+      "runtimeArgs": ["nx", "serve", "@servisbot/backend"],
       "env": {
         "NODE_OPTIONS": "--inspect=9229"
       },

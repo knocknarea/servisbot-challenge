@@ -1,10 +1,10 @@
 {
-  "name": "@challenge/backend-e2e",
+  "name": "@servisbot/backend-e2e",
   "version": "0.0.1",
   "private": true,
   "nx": {
     "implicitDependencies": [
-      "@challenge/backend"
+      "@servisbot/backend"
     ],
     "targets": {
       "e2e": {
@@ -17,8 +17,8 @@
           "passWithNoTests": true
         },
         "dependsOn": [
-          "@challenge/backend:build",
-          "@challenge/backend:serve"
+          "@servisbot/backend:build",
+          "@servisbot/backend:serve"
         ]
       }
     }
