@@ -10,9 +10,8 @@ const swcJestConfig = JSON.parse(
 swcJestConfig.swcrc = false;
 
 module.exports = {
-  displayName: '@servisbot/bot-service-server',
+  displayName: '@servisbot/service-bot-client',
   preset: '../../jest.preset.js',
-  testEnvironment: 'node',
   transform: {
     '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
   },

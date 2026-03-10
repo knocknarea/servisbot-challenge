@@ -1,5 +1,5 @@
 import { AppConfig, BotInfo, BotLogMessage, BotService, BotStatus, BotWorkerInfo, Page, PageQuery, PaginationUtil } from '@servisbot/model';
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 
 /**
  * An In Memory randomized Bot repository and service
@@ -101,7 +101,7 @@ export class InMemnoryBotService implements BotService {
       const randomStatus = statusEnumKeys[Math.floor(Math.random() * statusEnumKeys.length)];
 
       const bot = {
-        id: uuidv4(),
+        id: nanoid(),
         name: `InMem Bot (${this.config.deploymentType}) - ${index + 1}`,
         description: `Description for Bot ${index + 1}`,
         // Bit of wrangling here to coherse typescript into understanding 
@@ -139,7 +139,7 @@ export class InMemnoryBotService implements BotService {
 
   private generateWorkers(bot: BotInfo, maxWorkers: number): BotWorkerInfo[] {
     return [...Array(this.exact ? maxWorkers : Math.floor(Math.random() * maxWorkers))].map((index) => ({
-      id: uuidv4(),
+      id: nanoid(),
       name: `${bot.name} : Worker ${index + 1}`,
       description: `Worker ${index + 1} Description`,
       created: new Date().getTime(),
@@ -149,7 +149,7 @@ export class InMemnoryBotService implements BotService {
 
   private generateLogs(bot: BotInfo, worker: BotWorkerInfo, maxLogs: number): BotLogMessage[] {
     return [...Array(this.exact ? maxLogs : Math.floor(Math.random() * maxLogs)).map((index) => ({
-      id: uuidv4(),
+      id: nanoid(),
       bot: bot.id,
       worker: worker.id,
       message: `Random Message ${index + 1} for Bot ${bot.name} : ${worker.name}`,

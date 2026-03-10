@@ -16,7 +16,7 @@ export default async function (fastify: FastifyInstance) {
   });
 
   //
-  // Paginated listing of bots
+  // Paginated listing of bots, using singlar endpoint name inline with REST best practice
   //
   fastify.get<{ 
     Querystring: PageQuery,
@@ -38,7 +38,7 @@ export default async function (fastify: FastifyInstance) {
   fastify.get<{
     Querystring: PageQuery,
     Params: { botId: string },
-    Reply: Page<BotLogMessage>}>('/bot/:botId/logs', async (req, res) => {
+    Reply: Page<BotLogMessage>}>('/bot/:botId/log', async (req, res) => {
 
     const { botId } = req.params;
 
@@ -73,11 +73,18 @@ export default async function (fastify: FastifyInstance) {
   fastify.get<{
     Querystring: PageQuery,
     Params: { workerId: string },
-    Reply: Page<BotLogMessage>}>('/worker/:workerId/logs', async (req, res) => {
+    Reply: Page<BotLogMessage>}>('/worker/:workerId/log', async (req, res) => {
 
     const { workerId } = req.params;
 
     return res.send(await botService.listLogs(req.query, undefined, workerId));
   });
+
+  // Get all logs..
+  fastify.get<{
+    Querystring: PageQuery,
+    Reply: Page<BotLogMessage>}>('/log', async (req, res) => {
+      return res.send(await botService.listLogs(req.query, undefined, undefined));
+    });
 
 }

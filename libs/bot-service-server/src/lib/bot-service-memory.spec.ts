@@ -8,16 +8,20 @@ const config = {
 
 describe('bot-server-im-memory-test', () => {
   it('should generate multiples of 5', async () => {
-    const server = new InMemnoryBotService(config, 5, 5, 5);
+    const maxBots = 5;
+    const maxWorkerPerBot = 5;
+    const maxLogsPerWorker = 5;
 
-    const bots = await server.listBots({ pageNumber: 0, pageSize: 10});
-    expect(bots.payload.length).toBe(5);
+    const server = new InMemnoryBotService(config, maxBots, maxWorkerPerBot, maxLogsPerWorker);
 
-    const workers = await server.listWorker(undefined, { pageNumber: 0, pageSize: 26 });
-    expect(workers.payload.length).toBe(25);
+    const bots = await server.listBots({ pageNumber: 0, pageSize: maxBots + 1});
+    expect(bots.payload.length).toBe(maxBots);
 
-    const logs = await server.listLogs({ pageNumber: 0, pageSize: 26});
-    expect(logs.payload.length).toBe(25);
+    const workers = await server.listWorker(undefined, { pageNumber: 0, pageSize: maxBots * maxLogsPerWorker + 1 });
+    expect(workers.payload.length).toBe(maxBots * maxWorkerPerBot);
+
+    const logs = await server.listLogs({ pageNumber: 0, pageSize: maxBots * maxWorkerPerBot * maxLogsPerWorker + 1});
+    expect(logs.payload.length).toBe(maxBots * maxWorkerPerBot * maxLogsPerWorker);
 
   });
 });

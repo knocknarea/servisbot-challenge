@@ -69,3 +69,14 @@ export interface AppConfig {
      */
     buildType: BuildType;
 }
+
+/**
+ * A configuration mimimal more focused on client applications
+ *
+ * @export
+ * @interface ClientAppConfig
+ * @extends {AppConfig}
+ */
+export interface ClientAppConfig extends AppConfig {
+    botServiceUrl: string
+}

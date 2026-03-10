@@ -1,5 +1,5 @@
 {
-  "name": "@servisbot/bot-service-server",
+  "name": "@servisbot/bot-service-client",
   "version": "0.0.1",
   "type": "module",
   "main": "./dist/index.js",
@@ -8,7 +8,7 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "@servisbot/root": "./src/index.ts",
+      "@servisbot/adrian": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
@@ -18,7 +18,14 @@
     "dist",
     "!**/*.tsbuildinfo"
   ],
+  "nx": {
+    "name": "@servisbot/service-bot-client",
+    "tags": [
+      "bot-service client"
+    ]
+  },
   "dependencies": {
+    "tslib": "^2.3.0",
     "@servisbot/model": "*"
   }
 }
