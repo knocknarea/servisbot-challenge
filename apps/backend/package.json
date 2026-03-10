@@ -117,6 +117,7 @@
     "fastify-plugin": "~5.0.1"
   },
   "devDependencies": {
-    "@servisbot/model": "*"
+    "@servisbot/model": "*",
+    "@servisbot/bot-service-server": "*"
   }
 }

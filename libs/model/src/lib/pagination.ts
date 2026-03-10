@@ -95,3 +95,50 @@ export interface PageQuery {
      */
     query? : string
 }
+
+export class PaginationUtil {
+
+    private constructor() { /* empty */ }
+
+    public static readonly DEFAULT_PAGE_SIZE = 10;
+
+    /**
+     * Boiler plate code for slicing a page out of source data
+     *
+     * @template T the type of data
+     * @param {T[]} source the source array of data
+     * @param {PageQuery} pageQuery a valid page query
+     * @param {(nstance: T, q: string) => boolean} [filter] a supplier of boolean function to filter on attributes
+     * @return {*}  {Page<T>} a page
+     * @memberof PaginationUtil
+     */
+    public static slicePage<T>(source: T[], pageQuery: PageQuery, filter?: (instance: T, q: string) => boolean): Page<T> {
+
+        const { pageNumber, pageSize, query } = pageQuery;
+
+        const validSize: number = pageSize > 0 ? pageSize : PaginationUtil.DEFAULT_PAGE_SIZE;
+        const start: number = (pageNumber >= 0 ? pageNumber : 0) * validSize;
+        const end: number = start + validSize;
+
+        //
+        // Filter first...
+        //
+        const filtered = query ? (source || []).filter((bot) => filter ? filter(bot, query) : true) : source;
+
+        console.log(`Page: ${pageNumber} Size ${pageSize} Query ${query} => Valid Size ${validSize} s=${start} e=${end}`);
+        // Then slice a page out of the result
+        const result = start < filtered.length ? filtered
+        .slice(start, end < filtered.length ? end : filtered.length)
+        : [];
+
+        return { 
+            complete: result?.length <= 0,
+            pageNumber: pageNumber,
+            pageSize: validSize,
+            query: query,
+            totalPages: Math.ceil(source?.length / validSize),
+            payload: result
+        } as Page<T>;
+        
+    }
+}

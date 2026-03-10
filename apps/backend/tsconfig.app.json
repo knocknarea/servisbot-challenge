@@ -20,6 +20,9 @@
   ],
   "references": [
     {
+      "path": "../../libs/bot-service-server/tsconfig.lib.json"
+    },
+    {
       "path": "../../libs/model/tsconfig.lib.json"
     }
   ]
