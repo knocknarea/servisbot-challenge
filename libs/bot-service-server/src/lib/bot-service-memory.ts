@@ -22,11 +22,21 @@ export class InMemnoryBotService implements BotService {
   // keyed on bot id, map of all log messages related to a bot.
   private logMap: Map<string, BotLogMessage[]> = new Map();
 
+  /**
+   * Creates an instance of InMemnoryBotService.
+   * @param {AppConfig} config
+   * @param {number} [maxBots=20]
+   * @param {number} [maxWorkers=6]
+   * @param {number} [maxLogs=30]
+   * @param {boolean} [exact=true] whether to use exact specified max figures or random up to
+   * @memberof InMemnoryBotService
+   */
   public constructor(
-    private config: AppConfig, 
+    private config: AppConfig,
     maxBots = 20,
     maxWorkers = 6,
-    maxLogs = 30
+    maxLogs = 30,
+    private exact = true 
   ) {
     // Generate an in memory database to use for this running instance.
     this.buildInMemoryDB(
@@ -87,7 +97,7 @@ export class InMemnoryBotService implements BotService {
 
     // Build a map of randomly generated bot according to what was specified
     // in the constructor
-    [...Array(Math.floor(Math.random() * maxBots)).keys()].forEach((index) => {
+    [...Array(this.exact ? maxBots : Math.floor(Math.random() * maxBots)).keys()].forEach((index) => {
       const randomStatus = statusEnumKeys[Math.floor(Math.random() * statusEnumKeys.length)];
 
       const bot = {
@@ -128,7 +138,7 @@ export class InMemnoryBotService implements BotService {
   }
 
   private generateWorkers(bot: BotInfo, maxWorkers: number): BotWorkerInfo[] {
-    return [...Array(Math.floor(Math.random() * maxWorkers))].map((index) => ({
+    return [...Array(this.exact ? maxWorkers : Math.floor(Math.random() * maxWorkers))].map((index) => ({
       id: uuidv4(),
       name: `${bot.name} : Worker ${index + 1}`,
       description: `Worker ${index + 1} Description`,
@@ -138,7 +148,7 @@ export class InMemnoryBotService implements BotService {
   }
 
   private generateLogs(bot: BotInfo, worker: BotWorkerInfo, maxLogs: number): BotLogMessage[] {
-    return [...Array(Math.floor(Math.random() * maxLogs)).map((index) => ({
+    return [...Array(this.exact ? maxLogs : Math.floor(Math.random() * maxLogs)).map((index) => ({
       id: uuidv4(),
       bot: bot.id,
       worker: worker.id,

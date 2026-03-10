@@ -17,5 +17,9 @@ module.exports = {
     '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
+  moduleNameMapper: {
+    // Known issue with uuid and jest and commonjs
+    '^uuid$': require.resolve('uuid')
+  },
   coverageDirectory: 'test-output/jest/coverage',
 };
