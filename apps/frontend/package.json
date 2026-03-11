@@ -1,5 +1,18 @@
 {
   "name": "@servisbot/frontend",
   "version": "0.0.1",
-  "private": true
+  "private": true,
+
+  "dependencies": {
+    "@tanstack/react-router": "*",
+    "tailwindcss": "*",
+    "flowbite-react": "*",
+    "zustand": "*"
+  },
+
+  "devDependencies": {
+      "@tailwindcss/vite": "*",
+      "@tanstack/router-plugin": "*",
+      "@vitejs/plugin-react": "*"
+  }
 }

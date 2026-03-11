@@ -19,6 +19,7 @@
     "!**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@servisbot/model": "*"
+    "@servisbot/model": "*",
+    "nanoid": "*"
   }
 }
