@@ -5,9 +5,12 @@
 
   "dependencies": {
     "@tanstack/react-router": "*",
-    "tailwindcss": "*",
+    "date-fns": "*",
     "flowbite-react": "*",
-    "zustand": "*"
+    "zustand": "*",
+    "@servisbot/model" : "*",
+    "@servisbot/bot-service-client": "*",
+    "tailwindcss": "*"
   },
 
   "devDependencies": {

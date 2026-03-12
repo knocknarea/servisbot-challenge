@@ -7,10 +7,10 @@ import {
   NavbarToggle,
 } from 'flowbite-react';
 import { FaMagnifyingGlassChart, FaRobot } from 'react-icons/fa6';
-import { NavigationArea, useUIStore } from '../store/ui/ui-slice';
+import { NavigationArea, useNavigationStore } from '../store/navigation-store';
 
 export default function LayoutMenu() {
-  const { activeArea, setActiveArea } = useUIStore();
+  const { activeArea, setActiveArea } = useNavigationStore();
 
   return (
     <Navbar fluid rounded className="bg-mauve-200">

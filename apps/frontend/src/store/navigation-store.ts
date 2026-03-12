@@ -6,12 +6,15 @@ export enum NavigationArea {
     LOGS
 }
 
-export interface UIStore {
+export interface NavigationStore {
     activeArea: NavigationArea
     setActiveArea: (area: NavigationArea) => void
 }
 
-export const useUIStore = create<UIStore>()((set) => ({
+/**
+ * A zustand store for keeping track of where we are in the application
+ */
+export const useNavigationStore = create<NavigationStore>()((set) => ({
         activeArea: NavigationArea.HOME,
         setActiveArea: (area: NavigationArea) => set((state) => ({...state, activeArea: area}))
     })

@@ -6,9 +6,9 @@
  * @enum {number}
  */
 export enum BotStatus {
-  ENABLED,
-  DISABLED,
-  PAUSED
+  ENABLED = 'ENABLED',
+  DISABLED = 'DISABLED',
+  PAUSED = 'PAUSED'
 }
 
 /**

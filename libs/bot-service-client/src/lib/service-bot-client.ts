@@ -17,30 +17,35 @@ export class BotServiceClient implements BotService {
   listBots(query: PageQuery): Promise<Page<BotInfo>> {
     return axios.get(`${this.config.botServiceUrl}/bot`, {
       params: query
-    })
+    }).then((r) => r.data);
   }
+
   fetchBot(id: string): Promise<BotInfo | undefined> {
-    return axios.get(`${this.config.botServiceUrl}/bot/${id}`);
+    return axios.get(`${this.config.botServiceUrl}/bot/${id}`).then((r) => r.data);
   }
 
   listWorker(botId: string | undefined, query: PageQuery): Promise<Page<BotWorkerInfo>> {
-    return botId ? axios.get(`${this.config.botServiceUrl}/bot/${botId}/worker`, {
+    const response =  botId ? axios.get(`${this.config.botServiceUrl}/bot/${botId}/worker`, {
       params: query
-    }) : axios.get(`${this.config.botServiceUrl}/worker`, { params: query});
+    }) : axios.get(`${this.config.botServiceUrl}/worker`, { params: query}).then((r) => r.data);
+    return response.then((r) => r.data);
   }
 
   fetchWorker(workerId: string): Promise<BotWorkerInfo | undefined> {
-    return axios.get(`${this.config.botServiceUrl}/worker/${workerId}`)
+    return axios.get(`${this.config.botServiceUrl}/worker/${workerId}`).then((r) => r.data);
   }
 
   listLogs(query: PageQuery, botId?: string, workerId?: string): Promise<Page<BotLogMessage>> {
+    let response;
+
     if(workerId) {
-      return axios.get(`${this.config.botServiceUrl}/worker/${workerId}/log`, { params: query });
+      response = axios.get(`${this.config.botServiceUrl}/worker/${workerId}/log`, { params: query });
     } else if(botId) {
-      return axios.get(`${this.config.botServiceUrl}/bot/${botId}/log`, { params: query });
+      response = axios.get(`${this.config.botServiceUrl}/bot/${botId}/log`, { params: query });
     } else {
-      return axios.get(`${this.config.botServiceUrl}/log`, { params: query });
+      response = axios.get(`${this.config.botServiceUrl}/log`, { params: query });
     }
+    return response.then((r) => r.data);
   }
 
 }

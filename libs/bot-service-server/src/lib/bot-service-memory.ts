@@ -91,14 +91,14 @@ export class InMemnoryBotService implements BotService {
   //
   private buildInMemoryDB(maxBots: number, maxWorkers: number, maxLogs: number): void {
 
-    const statusEnumKeys = Object.keys(BotStatus);
+    const statusValues = Object.values(BotStatus);
 
     console.log(`Generating ${maxBots} InMemory Random Bots...`);
 
     // Build a map of randomly generated bot according to what was specified
     // in the constructor
     [...Array(this.exact ? maxBots : Math.floor(Math.random() * maxBots)).keys()].forEach((index) => {
-      const randomStatus = statusEnumKeys[Math.floor(Math.random() * statusEnumKeys.length)];
+      const randomStatus = Math.floor(Math.random() * statusValues.length);
 
       const bot = {
         id: nanoid(),
@@ -106,8 +106,8 @@ export class InMemnoryBotService implements BotService {
         description: `Description for Bot ${index + 1}`,
         // Bit of wrangling here to coherse typescript into understanding 
         // that we are selecting an enum by string value
-        status: BotStatus[randomStatus as keyof typeof BotStatus],
-        created: new Date().getTime()
+        status: statusValues[randomStatus],
+        created: new Date().getTime() / 1000
       } as BotInfo;
 
       console.log(`Generated InMemory Bot ${bot.id}`);
@@ -138,22 +138,22 @@ export class InMemnoryBotService implements BotService {
   }
 
   private generateWorkers(bot: BotInfo, maxWorkers: number): BotWorkerInfo[] {
-    return [...Array(this.exact ? maxWorkers : Math.floor(Math.random() * maxWorkers))].map((index) => ({
+    return [...Array(this.exact ? maxWorkers : Math.floor(Math.random() * maxWorkers)).keys()].map((index) => ({
       id: nanoid(),
       name: `${bot.name} : Worker ${index + 1}`,
       description: `Worker ${index + 1} Description`,
-      created: new Date().getTime(),
+      created: new Date().getTime() / 1000,
       bot: bot.name
     } as BotWorkerInfo));
   }
 
   private generateLogs(bot: BotInfo, worker: BotWorkerInfo, maxLogs: number): BotLogMessage[] {
-    return [...Array(this.exact ? maxLogs : Math.floor(Math.random() * maxLogs)).map((index) => ({
+    return [...Array(this.exact ? maxLogs : Math.floor(Math.random() * maxLogs)).keys()].map((index) => ({
       id: nanoid(),
       bot: bot.id,
       worker: worker.id,
       message: `Random Message ${index + 1} for Bot ${bot.name} : ${worker.name}`,
       created: new Date().toISOString()
-    } as BotLogMessage))];
+    } as BotLogMessage));
   }
 }

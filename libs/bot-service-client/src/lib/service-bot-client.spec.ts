@@ -1,4 +1,6 @@
 
 describe('serviceBotClient', () => {
-  // Blank for now
+  it('placeholder', () => {
+    expect(true).toBeTruthy();
+  });
 });
