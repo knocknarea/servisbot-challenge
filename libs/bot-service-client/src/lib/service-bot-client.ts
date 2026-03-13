@@ -1,4 +1,4 @@
-import { BotInfo, BotLogMessage, BotService, BotWorkerInfo, ClientAppConfig, Page, PageQuery } from "@servisbot/model";
+import { BotInfo, BotLogMessageDto, BotService, BotWorkerInfoDto, ClientAppConfig, Page, PageQuery } from "@servisbot/model";
 import axios from "axios";
 
 /**
@@ -24,18 +24,18 @@ export class BotServiceClient implements BotService {
     return axios.get(`${this.config.botServiceUrl}/bot/${id}`).then((r) => r.data);
   }
 
-  listWorker(botId: string | undefined, query: PageQuery): Promise<Page<BotWorkerInfo>> {
+  listWorker(botId: string | undefined, query: PageQuery): Promise<Page<BotWorkerInfoDto>> {
     const response =  botId ? axios.get(`${this.config.botServiceUrl}/bot/${botId}/worker`, {
       params: query
     }) : axios.get(`${this.config.botServiceUrl}/worker`, { params: query}).then((r) => r.data);
     return response.then((r) => r.data);
   }
 
-  fetchWorker(workerId: string): Promise<BotWorkerInfo | undefined> {
+  fetchWorker(workerId: string): Promise<BotWorkerInfoDto | undefined> {
     return axios.get(`${this.config.botServiceUrl}/worker/${workerId}`).then((r) => r.data);
   }
 
-  listLogs(query: PageQuery, botId?: string, workerId?: string): Promise<Page<BotLogMessage>> {
+  listLogs(query: PageQuery, botId?: string, workerId?: string): Promise<Page<BotLogMessageDto>> {
     let response;
 
     if(workerId) {

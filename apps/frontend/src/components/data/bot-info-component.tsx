@@ -1,7 +1,8 @@
 import { BotInfo, BotStatus } from '@servisbot/model';
 import { fromUnixTime } from 'date-fns';
-import { Badge, Card, HR } from 'flowbite-react';
+import { Badge, Button, Card, HR } from 'flowbite-react';
 import { useEffect } from 'react';
+import { FaArrowRight } from 'react-icons/fa6';
 import { useBotStore, WorkerListData } from '../../store/bot-store';
 import WorkerInfoPanel from './worker-panel-component';
 
@@ -21,9 +22,11 @@ const badgeTypeMap: Map<BotStatus, string> = new Map([
 export default function BotInfoComponent({
   info,
   selected,
+  enableLog = true,
 }: {
   info: BotInfo;
   selected: boolean;
+  enableLog: boolean;
 }) {
   const { setActiveBotId, addWorker } = useBotStore();
 
@@ -61,8 +64,14 @@ export default function BotInfoComponent({
           {fromUnixTime(info.created).toDateString()}
         </span>
       </p>
+      {enableLog ? (
+        <Button outline className="w-1/2 self-center">
+          Show Bot Logs
+          <FaArrowRight className="ml-5" />
+        </Button>
+      ) : null}
       <HR />
-      <WorkerInfoPanel bot={info}></WorkerInfoPanel>
+      <WorkerInfoPanel bot={info} selected={selected}></WorkerInfoPanel>
     </Card>
   );
 }

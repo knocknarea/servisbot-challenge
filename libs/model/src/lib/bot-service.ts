@@ -1,4 +1,5 @@
-import { BotInfo, BotLogMessage, BotWorkerInfo } from "./model.js";
+import { BotLogMessageDto, BotWorkerInfoDto } from "./api-dto.js";
+import { BotInfo } from "./model.js";
 import { Page, PageQuery } from "./pagination.js";
 
 /**
@@ -45,7 +46,7 @@ export interface BotService {
      * @return {*}  {Page<BotWorkerInfo>}
      * @memberof BotService
      */
-    listWorker(botId: string | undefined, query: PageQuery): Promise<Page<BotWorkerInfo>>;
+    listWorker(botId: string | undefined, query: PageQuery): Promise<Page<BotWorkerInfoDto>>;
 
     /**
      * Fetch a specific worker by it's ID
@@ -54,7 +55,7 @@ export interface BotService {
      * @return {*}  {(BotWorkerInfo | undefined)}
      * @memberof BotService
      */
-    fetchWorker(workerId: string): Promise<BotWorkerInfo | undefined>;
+    fetchWorker(workerId: string): Promise<BotWorkerInfoDto | undefined>;
 
 
     /**
@@ -68,7 +69,7 @@ export interface BotService {
      * @return {*}  {Page<BotLogMessage>}
      * @memberof BotService
      */
-    listLogs(query: PageQuery, botId?: string, workerId?: string): Promise<Page<BotLogMessage>>
+    listLogs(query: PageQuery, botId?: string, workerId?: string): Promise<Page<BotLogMessageDto>>
 
     // ... other methods for CRUD on bots, etc.
 }

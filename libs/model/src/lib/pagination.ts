@@ -103,6 +103,24 @@ export class PaginationUtil {
     public static readonly DEFAULT_PAGE_SIZE = 10;
 
     /**
+     * In axios and on the API side, sometimes the page number
+     * and size are encoded as a string. I need to fix validation on that
+     * size for now, I am just forcing integer/number.
+     *
+     * @static
+     * @param {PageQuery} query
+     * @return {*}  {PageQuery}
+     * @memberof PaginationUtil
+     */
+    public static sanitize(query: PageQuery): PageQuery {
+        return { 
+            pageNumber: +query.pageNumber,
+            pageSize: +query.pageSize,
+            query: query.query
+        } as PageQuery
+    }
+
+    /**
      * Boiler plate code for slicing a page out of source data
      *
      * @template T the type of data

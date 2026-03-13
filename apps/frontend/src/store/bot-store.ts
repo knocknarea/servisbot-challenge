@@ -1,7 +1,7 @@
 import { PageQuery } from "@servisbot/model";
 import { create } from "zustand";
 
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 5;
 
 export interface WorkerListData {
     query: PageQuery;
@@ -38,6 +38,8 @@ export interface BotStore extends BotListData {
 
     setQuery: (q: PageQuery) => void;
 
+    setCompleted: (complete: boolean) => void;
+
     addWorker: (botId: string, workerInfo: WorkerListData) => void;
 
     setActiveBotId: (botId?: string) => void;
@@ -46,16 +48,17 @@ export interface BotStore extends BotListData {
 
 }
 
-const initialState: BotListData = {
+export const BotStoreInitialState: BotListData = {
     query: { pageNumber: 0, pageSize: DEFAULT_PAGE_SIZE },
     completed: false,
     workerMap: new Map([] as [string, WorkerListData][])
 }
 
 export const useBotStore = create<BotStore>()((set) => ({
-        ...initialState,
-        reset: () => set((state) => ({...initialState })),
+        ...BotStoreInitialState,
+        reset: () => set((state) => ({...BotStoreInitialState })),
         setQuery: (query: PageQuery) => set((state) => ({...state, query})),
+        setCompleted: (completed: boolean) => set((state) => ({...state, completed })),
         addWorker: (botId: string, workerInfo: WorkerListData) => set((state) => {
             if(!state.workerMap.has(botId)) {
                 const next = new Map(state.workerMap);

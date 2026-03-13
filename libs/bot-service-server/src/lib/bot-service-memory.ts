@@ -1,4 +1,4 @@
-import { AppConfig, BotInfo, BotLogMessage, BotService, BotStatus, BotWorkerInfo, Page, PageQuery, PaginationUtil } from '@servisbot/model';
+import { AppConfig, BotInfo, BotLogMessage, BotLogMessageDto, BotService, BotStatus, BotWorkerInfo, BotWorkerInfoDto, Page, PageQuery, PaginationUtil } from '@servisbot/model';
 import { nanoid } from 'nanoid';
 
 /**
@@ -14,9 +14,19 @@ export class InMemnoryBotService implements BotService {
   // Keyed on bot id, map of all in memory bots
   private botMap: Map<string, BotInfo> = new Map();
 
+  //
+  // Keyed on unique bot name, useful for connecting Worker
+  // to it's owning bot, given worker only contains the name of the bot
+  // BIG ASSUMTION HERE: Bot names are unique SYSTEM WIDE. If NOT then
+  // the Worker model is incomplete/inconsistent and requires more information
+  // to UNIQUELY identify the owning bot, ideally based on ID.
+  //
+  private botNameMap: Map<string, BotInfo> = new Map();
+
   // keyed on bot id, map of all in memory bot workers
   private botWorkerMap: Map<string, BotWorkerInfo[]> = new Map();
 
+  // Keyed on worker id to quickly retrieve BotWorkerInfo details
   private workerMap: Map<string, BotWorkerInfo> = new Map();
 
   // keyed on bot id, map of all log messages related to a bot.
@@ -57,33 +67,71 @@ export class InMemnoryBotService implements BotService {
     return Promise.resolve(this.botMap.has(id) ? this.botMap.get(id) : undefined);
   }
 
-  listWorker(botId: string | undefined, pageQuery: PageQuery): Promise<Page<BotWorkerInfo>> {
+  listWorker(botId: string | undefined, pageQuery: PageQuery): Promise<Page<BotWorkerInfoDto>> {
     //
     // Either the specific workers belonging to a specific bot or a flattened array of all workers.
     // 
     const workerArray = botId ? this.botWorkerMap.get(botId) || [] : [...this.botWorkerMap.values()].flat();
 
-    return Promise.resolve(PaginationUtil.slicePage(
+    const source = PaginationUtil.slicePage(
       workerArray,
       pageQuery,
-      (bot, q) => bot.name.includes(q) || bot.description?.includes(q) || false
-    ));
+      (bot, q) => bot.name.includes(q) || bot.description?.includes(q) || false,
+    );
+    const decorated = { 
+      ...source, 
+      payload: source.payload?.map((worker) => ({
+        ...worker,
+        // NOTE: Worker refers to owning bot by NAME.
+        botInfo: this.botNameMap.get(worker.bot)
+      }))
+    } as Page<BotWorkerInfoDto>;
+
+    return Promise.resolve(decorated);
   }
 
-  fetchWorker(workerId: string): Promise<BotWorkerInfo | undefined> {
-    return Promise.resolve(this.workerMap.get(workerId) || undefined);
+  fetchWorker(workerId: string): Promise<BotWorkerInfoDto | undefined> {
+    const source = this.workerMap.get(workerId);
+    if(source) {
+      return Promise.resolve({ 
+        ...source, 
+        // NOTE: Worker refers to owning bot by NAME.
+        botInfo: this.botNameMap.get(source.bot)
+      } as BotWorkerInfoDto)
+    }
+    return Promise.resolve(undefined);
   }
 
-  listLogs(pageQuery: PageQuery, botId?: string, workerId?: string): Promise<Page<BotLogMessage>> {
+  listLogs(pageQuery: PageQuery, botId?: string, workerId?: string): Promise<Page<BotLogMessageDto>> {
     let logArray = workerId ? this.logMap.get(workerId) : [...this.logMap.values()].flat();
     if(botId) {
       logArray = logArray?.filter((log) => log.bot === botId);
     }
-    return Promise.resolve(PaginationUtil.slicePage(
+    //
+    // Pull from the base model layer, we will then decorate this
+    // with richer information
+    //
+    const source = PaginationUtil.slicePage(
       logArray || [],
       pageQuery,
       (log, q) => log.message.includes(q) || false
-    ));
+    );
+
+    //
+    // Decorate with retrieved Bot and Worker Details 
+    // to reduce round trip from UI to API or worse
+    // push, complex caching logic into the UI
+    //
+    const decorated = { 
+      ...source,
+      payload: source.payload?.map((log) => ({
+        botInfo: this.botMap.get(log.bot),
+        workerInfo: this.workerMap.get(log.worker)
+      }) as BotLogMessageDto)
+
+    } as Page<BotLogMessageDto>;
+
+    return Promise.resolve(decorated);
   }
 
   //
@@ -113,6 +161,8 @@ export class InMemnoryBotService implements BotService {
       console.log(`Generated InMemory Bot ${bot.id}`);
 
       this.botMap.set(bot.id, bot);
+      this.botNameMap.set(bot.name, bot);
+
       const workers = this.generateWorkers(bot, maxWorkers);
       
       console.log(`Generated ${workers.length} Workers for Bot ${bot.id}`);

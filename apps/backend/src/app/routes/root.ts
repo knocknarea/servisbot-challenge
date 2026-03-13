@@ -1,5 +1,5 @@
 import { InMemnoryBotService } from '@servisbot/bot-service-server';
-import { AppConfig, BotInfo, BotLogMessage, BotWorkerInfo, BuildType, DeploymentType, Page, PageQuery } from '@servisbot/model';
+import { AppConfig, BotInfo, BotLogMessage, BotWorkerInfo, BuildType, DeploymentType, Page, PageQuery, PaginationUtil } from '@servisbot/model';
 import { FastifyInstance } from 'fastify';
 
 const botService = new InMemnoryBotService({
@@ -22,7 +22,7 @@ export default async function (fastify: FastifyInstance) {
     Querystring: PageQuery,
     Reply: Page<BotInfo>}>('/bot', async (req, res) => {
 
-    return res.send(await botService.listBots(req.query));
+    return res.send(await botService.listBots(PaginationUtil.sanitize(req.query)));
   });
 
   // Get a specific bot by id
@@ -42,7 +42,7 @@ export default async function (fastify: FastifyInstance) {
 
     const { botId } = req.params;
 
-    return res.send(await botService.listLogs(req.query, botId, undefined));
+    return res.send(await botService.listLogs(PaginationUtil.sanitize(req.query), botId, undefined));
   });
 
   // List paginated workers of a bot by id
@@ -53,7 +53,7 @@ export default async function (fastify: FastifyInstance) {
 
     const { botId } = req.params;
 
-    return res.send(await botService.listWorker(botId, req.query));
+    return res.send(await botService.listWorker(botId, PaginationUtil.sanitize(req.query)));
   });
 
   // Get a specific worker by id
@@ -77,14 +77,14 @@ export default async function (fastify: FastifyInstance) {
 
     const { workerId } = req.params;
 
-    return res.send(await botService.listLogs(req.query, undefined, workerId));
+    return res.send(await botService.listLogs(PaginationUtil.sanitize(req.query), undefined, workerId));
   });
 
   // Get all logs..
   fastify.get<{
     Querystring: PageQuery,
     Reply: Page<BotLogMessage>}>('/log', async (req, res) => {
-      return res.send(await botService.listLogs(req.query, undefined, undefined));
+      return res.send(await botService.listLogs(PaginationUtil.sanitize(req.query), undefined, undefined));
     });
 
 }

@@ -1,18 +1,26 @@
 import { BotInfo, BotService } from '@servisbot/model';
-import { keepPreviousData, QueryClient, useQuery } from '@tanstack/react-query';
+import { QueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { useRouteContext } from '@tanstack/react-router';
 import {
   Accordion,
   AccordionContent,
   AccordionPanel,
   AccordionTitle,
+  Spinner,
 } from 'flowbite-react';
-import { useState } from 'react';
-import { useBotStore } from '../../store/bot-store';
+import { Fragment, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { BotStoreInitialState, useBotStore } from '../../store/bot-store';
 import WorkerInfo from './worker-info-component';
 
-export default function WorkerInfoPanel({ bot }: { bot: BotInfo }) {
-  const [workerVisible, setWorkerVisible] = useState(false);
+export default function WorkerInfoPanel({
+  bot,
+  selected,
+}: {
+  bot: BotInfo;
+  selected: boolean;
+}) {
+  const [workerVisible, setWorkerVisible] = useState(selected);
 
   const {
     queryClient,
@@ -23,30 +31,61 @@ export default function WorkerInfoPanel({ bot }: { bot: BotInfo }) {
 
   const workerListData = useBotStore((store) => store.workerMap.get(bot.id));
 
-  const { data, refetch } = useQuery(
+  const {
+    data: pages,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
     {
-      queryKey: ['worker-list', bot.id, workerListData?.query.pageNumber || 0],
-      queryFn: () =>
-        botService
-          .listWorker(
-            bot.id,
-            workerListData?.query || { pageNumber: 0, pageSize: 10 },
-          )
-          .then((page) => page.payload),
-      placeholderData: keepPreviousData,
+      queryKey: ['worker-list', bot.id],
+      queryFn: ({ pageParam }) => botService.listWorker(bot.id, pageParam),
+      initialPageParam: workerListData?.query || BotStoreInitialState.query,
+      getNextPageParam: (lastPage) =>
+        !lastPage?.complete
+          ? {
+              pageNumber: lastPage.pageNumber + 1,
+              pageSize: lastPage.pageSize,
+              query: lastPage.query,
+            }
+          : undefined,
       enabled: workerVisible,
     },
     queryClient,
   );
 
   return (
-    <Accordion collapseAll onClick={() => setWorkerVisible(!workerVisible)}>
+    <Accordion
+      collapseAll={!selected}
+      onClick={() => setWorkerVisible(!workerVisible)}
+    >
       <AccordionPanel>
         <AccordionTitle>Associated Workers</AccordionTitle>
-        <AccordionContent>
-          {data?.map((worker) => (
-            <WorkerInfo bot={bot} worker={worker}></WorkerInfo>
-          ))}
+        <AccordionContent
+          id={`worker-${bot.id}`}
+          className="max-h-120 overflow-scroll"
+        >
+          <InfiniteScroll
+            className="h-full overflow-auto flex items-center flex-col mt-5 sm:w-full"
+            dataLength={
+              pages?.pages
+                .map((page) => page.payload.length)
+                .reduce((a, b) => a + b, 0) || 0
+            }
+            next={() => !isFetchingNextPage && fetchNextPage()}
+            hasMore={hasNextPage}
+            loader={<Spinner size="sm" />}
+            endMessage={<div>No more workers...</div>}
+            scrollableTarget={`worker-${bot.id}`}
+          >
+            {pages?.pages.map((page, groupId) => (
+              <Fragment key={groupId}>
+                {page.payload.map((worker) => (
+                  <WorkerInfo worker={worker} bot={bot}></WorkerInfo>
+                ))}
+              </Fragment>
+            ))}
+          </InfiniteScroll>
         </AccordionContent>
       </AccordionPanel>
     </Accordion>

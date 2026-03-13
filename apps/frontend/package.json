@@ -7,10 +7,11 @@
     "@tanstack/react-router": "*",
     "date-fns": "*",
     "flowbite-react": "*",
-    "zustand": "*",
+    "react-infinite-scroll-component": "*",
     "@servisbot/model" : "*",
     "@servisbot/bot-service-client": "*",
-    "tailwindcss": "*"
+    "tailwindcss": "*",
+    "zustand": "*"
   },
 
   "devDependencies": {
