@@ -6,12 +6,12 @@ import {
   useNavigationStore,
 } from '../../store/navigation-store';
 
-export const Route = createFileRoute('/logs/$botId')({
+export const Route = createFileRoute('/logs/worker/$workerId')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { botId } = Route.useParams();
+  const { workerId } = Route.useParams();
 
   const { query } = useBotStore();
 
@@ -22,5 +22,5 @@ function RouteComponent() {
   // Note: dataLength is derived from reduction of the length
   // of the payload of all pages. TanStack infinite query stores
   // each page separately in a list.
-  return <LogListing query={query} botId={botId}></LogListing>;
+  return <LogListing query={query} workerId={workerId}></LogListing>;
 }

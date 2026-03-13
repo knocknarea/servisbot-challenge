@@ -1,4 +1,5 @@
 import { BotInfo, BotStatus } from '@servisbot/model';
+import { Link } from '@tanstack/react-router';
 import { fromUnixTime } from 'date-fns';
 import { Badge, Button, Card, HR } from 'flowbite-react';
 import { useEffect } from 'react';
@@ -65,10 +66,12 @@ export default function BotInfoComponent({
         </span>
       </p>
       {enableLog ? (
-        <Button outline className="w-1/2 self-center">
-          Show Bot Logs
-          <FaArrowRight className="ml-5" />
-        </Button>
+        <Link to={`/logs/bot/${info.id}`}>
+          <Button outline className="w-auto self-center">
+            Show Bot Logs
+            <FaArrowRight className="ml-5" />
+          </Button>
+        </Link>
       ) : null}
       <HR />
       <WorkerInfoPanel bot={info} selected={selected}></WorkerInfoPanel>

@@ -1,4 +1,5 @@
 import { BotInfo, BotWorkerInfoDto } from '@servisbot/model';
+import { Link } from '@tanstack/react-router';
 import { fromUnixTime } from 'date-fns';
 import { Button, Card } from 'flowbite-react';
 import { FaArrowRight } from 'react-icons/fa6';
@@ -44,10 +45,12 @@ export default function WorkerInfo({
         </span>
       </p>
       {enableLog ? (
-        <Button outline className="w-1/2 self-center">
-          Show Worker Logs
-          <FaArrowRight className="ml-5" />
-        </Button>
+        <Link to={`/logs/worker/${worker.id}`}>
+          <Button outline className="w-auto self-center">
+            Show Worker Logs
+            <FaArrowRight className="ml-5" />
+          </Button>
+        </Link>
       ) : null}
     </Card>
   );
