@@ -125,6 +125,7 @@ export class InMemnoryBotService implements BotService {
     const decorated = { 
       ...source,
       payload: source.payload?.map((log) => ({
+        ...log,
         botInfo: this.botMap.get(log.bot),
         workerInfo: this.workerMap.get(log.worker)
       }) as BotLogMessageDto)
