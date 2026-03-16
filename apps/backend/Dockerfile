@@ -4,19 +4,19 @@
 #
 # Run the container with `nx docker:run @servisbot/backend -p 3000:3000`.
 #
-FROM docker.io/node:lts-alpine
+FROM docker.io/node:24-alpine3.23 as build
+
+WORKDIR /opt/servisbot/api
+
+COPY dist/ ./
+
+RUN addgroup -S servisbot && adduser -S servisbot -G servisbot
+
+RUN chown -R servisbot:servisbot /opt/servisbot/api
 
 ENV HOST=0.0.0.0
 ENV PORT=3000
 
-
-WORKDIR /app
-
-COPY dist .
-
-# You can remove this install step if you build with `--bundle` option.
-# The bundled output will include external dependencies.
-
-RUN npm --omit=dev -f install
+USER servisbot
 
 CMD [ "node", "main.js" ]

@@ -3,15 +3,33 @@ import { create } from "zustand";
 
 const DEFAULT_PAGE_SIZE = 5;
 
+/**
+ * Worker list state / bot
+ *
+ * @export
+ * @interface WorkerListData
+ */
 export interface WorkerListData {
     query: PageQuery;
-    completed: boolean;
     activeWorkerId?: string;
 }
 
 export interface BotListData {
-    query: PageQuery;
-    completed: boolean;
+    
+    /**
+     * Toplevel query for listing all bots
+     *
+     * @type {PageQuery}
+     * @memberof BotListData
+     */
+    botListQuery: PageQuery;
+    /**
+     * Top level query for listing all workers
+     *
+     * @type {PageQuery}
+     * @memberof BotListData
+     */
+    workerListQuery: PageQuery;
     activeBotId?: string;
     //
     // A per bot id (keyed on bot id) map of how we
@@ -36,10 +54,10 @@ export interface BotStore extends BotListData {
 
     reset: () => void;
 
-    setQuery: (q: PageQuery) => void;
+    setBotListQuery: (q: PageQuery) => void;
 
-    setCompleted: (complete: boolean) => void;
-
+    setWorkerListQuery: (q: PageQuery) => void;
+    
     addWorker: (botId: string, workerInfo: WorkerListData) => void;
 
     setActiveBotId: (botId?: string) => void;
@@ -49,16 +67,16 @@ export interface BotStore extends BotListData {
 }
 
 export const BotStoreInitialState: BotListData = {
-    query: { pageNumber: 0, pageSize: DEFAULT_PAGE_SIZE },
-    completed: false,
+    botListQuery: { pageNumber: 0, pageSize: DEFAULT_PAGE_SIZE },
+    workerListQuery: { pageNumber: 0, pageSize: DEFAULT_PAGE_SIZE },
     workerMap: new Map([] as [string, WorkerListData][])
 }
 
 export const useBotStore = create<BotStore>()((set) => ({
         ...BotStoreInitialState,
         reset: () => set((state) => ({...BotStoreInitialState })),
-        setQuery: (query: PageQuery) => set((state) => ({...state, query})),
-        setCompleted: (completed: boolean) => set((state) => ({...state, completed })),
+        setBotListQuery: (query: PageQuery) => set((state) => ({...state, botListQuery: query})),
+        setWorkerListQuery: (query: PageQuery) => set((state) => ({...state, workerListQuery: query})),
         addWorker: (botId: string, workerInfo: WorkerListData) => set((state) => {
             if(!state.workerMap.has(botId)) {
                 const next = new Map(state.workerMap);

@@ -11,7 +11,8 @@ export const Route = createFileRoute('/logs/')({
 });
 
 export default function Logs() {
-  const { query } = useBotStore();
+  const { workerListQuery: query, setWorkerListQuery: setQuery } =
+    useBotStore();
 
   const setActiveArea = useNavigationStore((state) => state.setActiveArea);
 
@@ -22,5 +23,5 @@ export default function Logs() {
   // Note: dataLength is derived from reduction of the length
   // of the payload of all pages. TanStack infinite query stores
   // each page separately in a list.
-  return <LogListing query={query}></LogListing>;
+  return <LogListing query={query} setQuery={setQuery}></LogListing>;
 }

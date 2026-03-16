@@ -13,7 +13,8 @@ export const Route = createFileRoute('/logs/worker/$workerId')({
 function RouteComponent() {
   const { workerId } = Route.useParams();
 
-  const { query } = useBotStore();
+  const { workerListQuery: query, setWorkerListQuery: setQuery } =
+    useBotStore();
 
   const setActiveArea = useNavigationStore((state) => state.setActiveArea);
 
@@ -22,5 +23,11 @@ function RouteComponent() {
   // Note: dataLength is derived from reduction of the length
   // of the payload of all pages. TanStack infinite query stores
   // each page separately in a list.
-  return <LogListing query={query} workerId={workerId}></LogListing>;
+  return (
+    <LogListing
+      query={query}
+      setQuery={setQuery}
+      workerId={workerId}
+    ></LogListing>
+  );
 }

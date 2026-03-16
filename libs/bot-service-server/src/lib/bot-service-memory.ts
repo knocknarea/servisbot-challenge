@@ -59,7 +59,7 @@ export class InMemnoryBotService implements BotService {
     return Promise.resolve(PaginationUtil.slicePage(
       [...this.botMap.values()],
       pageQuery,
-      (bot, q) => bot.name.includes(q) || bot.description?.includes(q) || false
+      (bot, q) => bot.name?.toLowerCase().includes(q) || bot.description?.toLowerCase().includes(q) || false
     ));
   }
 
@@ -76,7 +76,7 @@ export class InMemnoryBotService implements BotService {
     const source = PaginationUtil.slicePage(
       workerArray,
       pageQuery,
-      (bot, q) => bot.name.includes(q) || bot.description?.includes(q) || false,
+      (bot, q) => bot.name.toLowerCase().includes(q.toLowerCase()) || bot.description?.toLowerCase().includes(q.toLowerCase()) || false,
     );
     const decorated = { 
       ...source, 
@@ -105,8 +105,9 @@ export class InMemnoryBotService implements BotService {
   listLogs(pageQuery: PageQuery, botId?: string, workerId?: string): Promise<Page<BotLogMessageDto>> {
     let logArray = workerId ? this.logMap.get(workerId) : [...this.logMap.values()].flat();
     if(botId) {
-      logArray = logArray?.filter((log) => log.bot === botId);
+      logArray = logArray?.filter((log) => log?.bot === botId);
     }
+ 
     //
     // Pull from the base model layer, we will then decorate this
     // with richer information
@@ -114,9 +115,9 @@ export class InMemnoryBotService implements BotService {
     const source = PaginationUtil.slicePage(
       logArray || [],
       pageQuery,
-      (log, q) => log.message.includes(q) || false
+      (log, q) => log.message.toLowerCase().includes(q.toLowerCase()) || false
     );
-
+ 
     //
     // Decorate with retrieved Bot and Worker Details 
     // to reduce round trip from UI to API or worse

@@ -141,7 +141,7 @@ export class PaginationUtil {
         //
         // Filter first...
         //
-        const filtered = query ? (source || []).filter((bot) => filter ? filter(bot, query) : true) : source;
+        const filtered = query ? (source || []).filter((item) => filter ? filter(item, query) : true) : source;
 
         console.log(`Page: ${pageNumber} Size ${pageSize} Query ${query} => Valid Size ${validSize} s=${start} e=${end}`);
         // Then slice a page out of the result

@@ -1,10 +1,11 @@
 import { BotInfo, BotStatus } from '@servisbot/model';
 import { Link } from '@tanstack/react-router';
 import { fromUnixTime } from 'date-fns';
-import { Badge, Button, Card, HR } from 'flowbite-react';
+import { Button, Card, HR } from 'flowbite-react';
 import { useEffect } from 'react';
 import { FaArrowRight } from 'react-icons/fa6';
 import { useBotStore, WorkerListData } from '../../store/bot-store';
+import BotStatusBadge from './bot-status-component';
 import WorkerInfoPanel from './worker-panel-component';
 
 // Convenience lookup for badge type
@@ -39,35 +40,46 @@ export default function BotInfoComponent({
 
   return (
     <Card
-      className={`md:w-1/2 md:mx-20 sm:w-full sm:mx-10 mb-2 ${selected ? 'bg-slate-50' : null}`}
+      data-testid={info.id}
+      className={`mt-5 mb-2 ${selected ? 'bg-slate-50' : null}`}
       onClick={() => setActiveBotId(info.id)}
     >
-      <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+      <h5
+        data-testid={`${info.id}-name`}
+        className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+      >
         {info.name}
       </h5>
 
       {/* if there is a description show it */}
       {info.description ? (
-        <p className="font-normal italic text-gray-700 dark:text-gray-400">
+        <p
+          data-testid={`${info.id}-description`}
+          className="font-normal italic text-gray-700 dark:text-gray-400"
+        >
           {info.description}
         </p>
       ) : null}
 
       <div className="flex items-center gap-2 font-normal text-gray-700 dark:text-gray-400">
         <span className="mr-2">Status</span>
-        <Badge color={badgeTypeMap.get(info.status)} size="sm" className="ml-2">
-          {info.status}
-        </Badge>
+        <span className="ml-2">
+          <BotStatusBadge bot={info}></BotStatusBadge>
+        </span>
       </div>
       <p>
         <span className="mr-2">Created</span>
-        <span className="font-medium">
+        <span data-testid={`${info.id}-created`} className="font-medium">
           {fromUnixTime(info.created).toDateString()}
         </span>
       </p>
       {enableLog ? (
         <Link to={`/logs/bot/${info.id}`}>
-          <Button outline className="w-auto self-center">
+          <Button
+            data-testid={`${info.id}-logs`}
+            outline
+            className="w-auto self-center"
+          >
             Show Bot Logs
             <FaArrowRight className="ml-5" />
           </Button>

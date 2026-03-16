@@ -40,7 +40,8 @@ export default function WorkerInfoPanel({
     {
       queryKey: ['worker-list', bot.id],
       queryFn: ({ pageParam }) => botService.listWorker(bot.id, pageParam),
-      initialPageParam: workerListData?.query || BotStoreInitialState.query,
+      initialPageParam:
+        workerListData?.query || BotStoreInitialState.botListQuery,
       getNextPageParam: (lastPage) =>
         !lastPage?.complete
           ? {

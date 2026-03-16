@@ -1,6 +1,10 @@
+import { TextDecoder, TextEncoder } from 'util';
+Object.assign(global, { TextDecoder, TextEncoder });
+
 module.exports = {
   displayName: '@servisbot/frontend',
   preset: '../../jest.preset.js',
+  testEnvironment: 'jsdom',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/react/babel'] }],

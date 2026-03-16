@@ -6,20 +6,28 @@ import {
   NavbarLink,
   NavbarToggle,
 } from 'flowbite-react';
+import { useContext } from 'react';
 import { FaMagnifyingGlassChart, FaRobot } from 'react-icons/fa6';
+import { ConfigContext } from '../config/config-factory';
 import { NavigationArea, useNavigationStore } from '../store/navigation-store';
 
 export default function LayoutMenu() {
   const { activeArea, setActiveArea } = useNavigationStore();
+  const config = useContext(ConfigContext);
 
   return (
     <Navbar fluid rounded className="bg-mauve-200">
       <NavbarBrand>
-        <img
-          src="/servisbot-logo.png"
-          className="w-50 h-12 object-scale-down md:object-contain"
-          alt="ServisBot Logo"
-        />
+        <div>
+          <img
+            src="/servisbot-logo.png"
+            className="w-50 h-12 object-scale-down md:object-contain"
+            alt="ServisBot Logo"
+          />
+          <div className="flex ml-0 sm:text-normal text-sm font-bold uppercase">
+            Environment : {config.deploymentType}
+          </div>
+        </div>
       </NavbarBrand>
       <NavbarToggle />
       <NavbarCollapse>

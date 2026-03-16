@@ -1,12 +1,14 @@
 {
   "name": "@servisbot/frontend",
   "version": "0.0.1",
+  "type": "module",
   "private": true,
 
   "dependencies": {
     "@tanstack/react-router": "*",
     "date-fns": "*",
     "flowbite-react": "*",
+    "lodash": "*",
     "react-infinite-scroll-component": "*",
     "@servisbot/model" : "*",
     "@servisbot/bot-service-client": "*",
@@ -17,6 +19,7 @@
   "devDependencies": {
       "@tailwindcss/vite": "*",
       "@tanstack/router-plugin": "*",
-      "@vitejs/plugin-react": "*"
+      "@vitejs/plugin-react": "*",
+      "jest-environment-jsdom": "*"
   }
 }
